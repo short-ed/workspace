@@ -1,10 +1,3 @@
-import { defineNuxtModule } from 'nuxt/kit'
-
-export default defineNuxtModule({
-  meta: {
-    name: 'tools'
-  },
-  setup () {
-
-  }
-})
+export const Tools = {
+  'RECTANGLE': {}
+}
