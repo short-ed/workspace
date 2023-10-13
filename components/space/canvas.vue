@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useContextMenu } from '~/composables/useContextMenu'
+import { useContextMenuStore } from '~/stores/context-menu';
 
 interface Position {
   x: number
@@ -32,15 +32,12 @@ const helperAreaPosition = computed(() => ({
   y: Math.min(startPosition.value.y, y.value)
 }))
 
-const selectorRectStyle = computed(() => ({
-  transform: `
-    translate(${Math.min(startPosition.value.x, x.value)}px, ${Math.min(
-      startPosition.value.y,
-      y.value
-  )}px)
-    scaleX(${Math.abs(startPosition.value.x - x.value)})
-    scaleY(${Math.abs(startPosition.value.y - y.value)})
-  `,
+const canvasAreaProps = computed(() => ({
+  x: helperAreaPosition.value.x,
+  y: helperAreaPosition.value.y,
+  width: helperAreaSize.value.width,
+  height: helperAreaSize.value.height,
+  opacity: pressed.value ? 1 : 0
 }))
 
 watch(pressed, (newPressedValue) => {
@@ -52,39 +49,59 @@ watch(pressed, (newPressedValue) => {
   }
 })
 
-const { open, setMenuItems } = useContextMenu()
+const contextMEnuStore = useContextMenuStore()
 
 const openContext = (e: MouseEvent) => {
-  setMenuItems([
-    {
-      label: 'Canvas menu item',
+  contextMEnuStore.open({
+    positionMenu: { x: e.clientX, y: e.clientY },
+    itemsMenu: [
+      // {
+      //   label: 'Copy',
+      //   hotkey: '⌘C',
+      //   action: () => {}
+      // },
+      {
+        label: 'Canvas menu item',
       action: () => {}
-    },
-  ])
-  open({ x: e.clientX, y: e.clientY })
+      },
+    ]
+  })
 }
+
+
+const elementProps = ref({
+  x: 0,
+  y: 0,
+  width: 100,
+  height: 60,
+});
+
+const elementDeltaProps = ref({
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+});
 
 </script>
 
 <template>
-<div class="painter-container">
-  <slot name="area" v-bind="{ size: helperAreaSize, position: helperAreaPosition }" v-if="pressed">
-    <div v-if="pressed" :style="selectorRectStyle" class="painter-rectangle" />
-  </slot>
-  <div ref="canvasEl" class="absolute top-0 left-0 w-full h-full" @contextmenu.self="openContext">
+  <div class="pattern-grid overflow-hidden" ref="canvasEl">
+    <!-- <NodeFrame :size="{ width: elementProps.width, height: elementProps.height }" :position="{ x: elementProps.x, y: elementProps.height }"  /> -->
+    <NodeFrame v-if="pressed" class="pointer-events-none" :size="canvasAreaProps" :position="canvasAreaProps"  />
+    <CanvasArea v-bind="canvasAreaProps" />
+    <!-- <div ref="canvasEl" class="absolute top-0 left-0 w-full h-full" @contextmenu.self="openContext">
+    </div> -->
+    <!-- <slot /> -->
   </div>
-  <slot />
-</div>
 </template>
 
 <style scoped>
 .painter-container {
   position: relative;
-  background-color: #141414;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  border-radius: 4px;
   overflow: hidden;
-  outline: 12px solid rgba(255, 255, 255, 0.02);
+  background-color: #141414;
 }
 
 .painter-rectangle {

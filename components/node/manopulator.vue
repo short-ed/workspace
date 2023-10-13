@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useContextMenu } from '~/composables/useContextMenu'
+import { useContextMenuStore } from '~/stores/context-menu';
 
 interface Position {
   x: number
@@ -154,21 +154,26 @@ useEventListener(window, 'pointermove', move, true);
 useEventListener(window, 'pointerup', end, true);
 // useEventListener(unfocusedFrameElement, 'pointerdown', start)
 
-const { open, setMenuItems } = useContextMenu()
+const contextMEnuStore = useContextMenuStore()
+console.log(contextMEnuStore);
 
 const openContext = (e: MouseEvent) => {
-  setMenuItems([
-    // {
-    //   label: 'Copy',
-    //   hotkey: '⌘C',
-    //   action: () => {}
-    // },
-    {
-      label: 'Remove',
-      action: () => {}
-    },
-  ])
-  open({ x: e.clientX, y: e.clientY })
+  console.log(e);
+  
+  contextMEnuStore.open({
+    positionMenu: { x: e.clientX, y: e.clientY },
+    itemsMenu: [
+      // {
+      //   label: 'Copy',
+      //   hotkey: '⌘C',
+      //   action: () => {}
+      // },
+      {
+        label: 'Remove',
+        action: () => {}
+      },
+    ]
+  })
 }
 </script>
 
@@ -176,26 +181,26 @@ const openContext = (e: MouseEvent) => {
 
 <div class="frame absolute translate-x-[--x] translate-y-[--y]" :style="cssVariables" ref="frameElement" @contextmenu.prevent="openContext">
 
-  <div data-direction="all" class="hover:border border-green-500 ">
+  <div data-direction="all" class="hover:border border-primary ">
     <div class="pointer-events-none">
       <slot />
     </div>
   </div>
 
   <div v-if="focused && showSizeManipulators"  class="absolute top-0 left-0 grid grid-cols-[12px_1px_12px] grid-rows-[12px_1px_12px] place-content-center translate--12px">
-    <div data-direction="top-left" class="cursor-nwse-resize after:translate-[--translate]"></div>
-    <div data-direction="top" class="cursor-ns-resize border-b border-green-500 w-1px scale-x-[--width] origin-top-left"></div>
-    <div data-direction="top-right" class="cursor-nesw-resize translate-x-[calc(var(--width,1)*1px-1px)] after:translate-y-[--translate] after:translate-x-[calc(var(--translate)*-1)]" ></div>
-    <div data-direction="left" class="cursor-ew-resize border-r border-green-500  h-1px scale-y-[--height] origin-top-left" ></div>
+    <div data-direction="top-left" class="after:border-primary cursor-nwse-resize after:translate-[--translate]"></div>
+    <div data-direction="top" class="cursor-ns-resize border-b border-primary w-1px scale-x-[--width] origin-top-left"></div>
+    <div data-direction="top-right" class="after:border-primary cursor-nesw-resize translate-x-[calc(var(--width,1)*1px-1px)] after:translate-y-[--translate] after:translate-x-[calc(var(--translate)*-1)]" ></div>
+    <div data-direction="left" class="cursor-ew-resize border-r border-primary  h-1px scale-y-[--height] origin-top-left" ></div>
     <div data-direction="all" class="w-1px h-1px scale-x-[--width] scale-y-[--height] origin-top-left" ></div>
-    <div data-direction="right" class="cursor-ew-resize border-l border-green-500 h-1px scale-y-[--height] origin-top-left  translate-x-[calc(var(--width)*1px-1px)]" ></div>
-    <div data-direction="bottom-left" class="cursor-nesw-resize translate-y-[calc(var(--height)*1px-1px)]  after:translate-y-[calc(var(--translate)*-1)] after:translate-x-[--translate]" ></div>
-    <div data-direction="bottom" class="cursor-ns-resize border-t border-green-500 w-1px scale-x-[--width] origin-top-left translate-y-[calc(var(--height)*1px-1px)]" ></div>
-    <div data-direction="bottom-right" class="cursor-nwse-resize translate-x-[calc(var(--width)*1px-1px)] translate-y-[calc(var(--height)*1px-1px)] after:translate-[calc(var(--translate)*-1)]" ></div>
+    <div data-direction="right" class="cursor-ew-resize border-l border-primary h-1px scale-y-[--height] origin-top-left  translate-x-[calc(var(--width)*1px-1px)]" ></div>
+    <div data-direction="bottom-left" class="after:border-primary cursor-nesw-resize translate-y-[calc(var(--height)*1px-1px)]  after:translate-y-[calc(var(--translate)*-1)] after:translate-x-[--translate]" ></div>
+    <div data-direction="bottom" class="cursor-ns-resize border-t border-primary w-1px scale-x-[--width] origin-top-left translate-y-[calc(var(--height)*1px-1px)]" ></div>
+    <div data-direction="bottom-right" class="after:border-primary cursor-nwse-resize translate-x-[calc(var(--width)*1px-1px)] translate-y-[calc(var(--height)*1px-1px)] after:translate-[calc(var(--translate)*-1)]" ></div>
   </div>
 
   <div v-if="focused && showSizeManipulators" class="absolute top-0 -left-0 translate-y-[calc(var(--height)*1px+8px)] translate-x-[calc((var(--width)*1px-1px)/2)]">
-    <div class="h-16px rounded-2px bg-green-500 px-4px text-10px flex items-center justify-center translate-x--50%">{{ elementProps.width }}x{{ elementProps.height }}</div>
+    <div class="h-16px rounded-2px bg-primary px-4px text-10px flex items-center justify-center translate-x--50%">{{ elementProps.width }}x{{ elementProps.height }}</div>
   </div>
   </div>
 </template>
@@ -219,7 +224,7 @@ const openContext = (e: MouseEvent) => {
   display: block;
   width: 8px;
   aspect-ratio: 1;
-  border: 1px solid #22c55e;
+  border: 1px solid;
   background-color: #fff;
   --translate: 6px;
 }
