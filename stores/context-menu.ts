@@ -11,18 +11,18 @@ export const useContextMenuStore = defineStore('context-menu', () => {
     hotkey?: string
     action: (params?: any) => void | Promise<void>
   }
-  
-  const isVisible= ref(true)
-  const position = ref<Position>({x: 0, y: 0})
+
+  const isVisible = ref(true)
+  const position = ref<Position>({ x: 0, y: 0 })
   const items = ref<Item[]>([])
 
-  const open = ({positionMenu, itemsMenu }: {positionMenu?: Position, itemsMenu?: Item[] }) => {    
-    if (positionMenu) {
+  const open = ({ positionMenu, itemsMenu }: { positionMenu?: Position; itemsMenu?: Item[] }) => {
+    if (positionMenu)
       position.value = positionMenu
-    }
-    if (itemsMenu) {
+
+    if (itemsMenu)
       items.value = itemsMenu
-    }
+
     isVisible.value = true
   }
 

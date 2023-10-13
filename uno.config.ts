@@ -20,14 +20,14 @@ export default defineConfig({
     presetIcons({
       scale: 1.2,
     }),
-    // presetTypography(),
-    // presetWebFonts({
-    //   fonts: {
-    //     sans: 'DM Sans',
-    //     serif: 'DM Serif Display',
-    //     mono: 'DM Mono',
-    //   },
-    // })
+    presetTypography(),
+    presetWebFonts({
+      fonts: {
+        sans: 'DM Sans',
+        serif: 'DM Serif Display',
+        mono: 'DM Mono',
+      },
+    }),
   ],
   transformers: [
     transformerDirectives(),
@@ -36,28 +36,28 @@ export default defineConfig({
 
   theme: {
     colors: {
-      'primary': '#22c55e',
-    }
+      primary: '#008A60',
+    },
   },
   rules: [
     ['pattern-dots', {
       '--pt-dots-opacity': '5%',
       'background-image': 'radial-gradient(hsla(0, 0%, 100%, var(--pt-dots-opacity)) 1px, transparent 1px)',
-      'background-size': '16px 16px'
+      'background-size': '16px 16px',
     }, {
-      autocomplete: 'pattern-dots'
+      autocomplete: 'pattern-dots',
     }],
     ['pattern-grid', {
       '--pt-grid-opacity': '3%',
-      'background-image': '' +
-        'linear-gradient(hsla(0, 0%, 100%, var(--pt-grid-opacity)) 2px, transparent 2px), ' +
-        'linear-gradient(90deg, hsla(0, 0%, 100%, var(--pt-grid-opacity)) 2px, transparent 2px), ' +
-        'linear-gradient(hsla(0, 0%, 100%, calc(var(--pt-grid-opacity) - 1%)) 1px, transparent 1px), ' +
-        'linear-gradient(90deg, hsla(0, 0%, 100%, calc(var(--pt-grid-opacity) - 1%)) 1px, transparent 1px)',
+      'background-image': ''
+        + 'linear-gradient(hsla(0, 0%, 100%, var(--pt-grid-opacity)) 2px, transparent 2px), '
+        + 'linear-gradient(90deg, hsla(0, 0%, 100%, var(--pt-grid-opacity)) 2px, transparent 2px), '
+        + 'linear-gradient(hsla(0, 0%, 100%, calc(var(--pt-grid-opacity) - 1%)) 1px, transparent 1px), '
+        + 'linear-gradient(90deg, hsla(0, 0%, 100%, calc(var(--pt-grid-opacity) - 1%)) 1px, transparent 1px)',
       'background-size': '100px 100px, 100px 100px, 20px 20px, 20px 20px',
-      'background-position': '-1px -1px, -1px -1px, 0 0, 0 0'
+      'background-position': '-1px -1px, -1px -1px, 0 0, 0 0',
     }, {
-      autocomplete: 'pattern-grid'
+      autocomplete: 'pattern-grid',
     }],
   ],
 })

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue'
 
 interface TransformerData {
-  isDragging: boolean;
-  isResizing: boolean;
-  startX: number;
-  startY: number;
-  startWidth: number;
-  startHeight: number;
-  elementX: number;
-  elementY: number;
-  elementWidth: number;
-  elementHeight: number;
+  isDragging: boolean
+  isResizing: boolean
+  startX: number
+  startY: number
+  startWidth: number
+  startHeight: number
+  elementX: number
+  elementY: number
+  elementWidth: number
+  elementHeight: number
 }
 
 const data = ref<TransformerData>({
@@ -25,62 +25,61 @@ const data = ref<TransformerData>({
   elementY: 0,
   elementWidth: 100,
   elementHeight: 100,
-});
+})
 
-const element = ref<HTMLElement | null>(null);
+const element = ref<HTMLElement | null>(null)
 
-const startDrag = (event: MouseEvent) => {
-  data.value.isDragging = true;
-  data.value.startX = event.clientX;
-  data.value.startY = event.clientY;
-  data.value.elementX = element.value?.offsetLeft ?? 0;
-  data.value.elementY = element.value?.offsetTop ?? 0;
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', stopDrag);
-};
+function startDrag(event: MouseEvent) {
+  data.value.isDragging = true
+  data.value.startX = event.clientX
+  data.value.startY = event.clientY
+  data.value.elementX = element.value?.offsetLeft ?? 0
+  data.value.elementY = element.value?.offsetTop ?? 0
+  document.addEventListener('mousemove', drag)
+  document.addEventListener('mouseup', stopDrag)
+}
 
-const drag = (event: MouseEvent) => {
+function drag(event: MouseEvent) {
   if (data.value.isDragging) {
-    const deltaX = event.clientX - data.value.startX;
-    const deltaY = event.clientY - data.value.startY;
-    data.value.elementX += deltaX;
-    data.value.elementY += deltaY;
-    data.value.startX = event.clientX;
-    data.value.startY = event.clientY;
+    const deltaX = event.clientX - data.value.startX
+    const deltaY = event.clientY - data.value.startY
+    data.value.elementX += deltaX
+    data.value.elementY += deltaY
+    data.value.startX = event.clientX
+    data.value.startY = event.clientY
   }
-};
+}
 
-const stopDrag = () => {
-  data.value.isDragging = false;
-  document.removeEventListener('mousemove', drag);
-  document.removeEventListener('mouseup', stopDrag);
-};
+function stopDrag() {
+  data.value.isDragging = false
+  document.removeEventListener('mousemove', drag)
+  document.removeEventListener('mouseup', stopDrag)
+}
 
-const startResize = (event: MouseEvent) => {
-  data.value.isResizing = true;
-  data.value.startX = event.clientX;
-  data.value.startY = event.clientY;
-  data.value.startWidth = data.value.elementWidth;
-  data.value.startHeight = data.value.elementHeight;
-  document.addEventListener('mousemove', resize);
-  document.addEventListener('mouseup', stopResize);
-};
+function startResize(event: MouseEvent) {
+  data.value.isResizing = true
+  data.value.startX = event.clientX
+  data.value.startY = event.clientY
+  data.value.startWidth = data.value.elementWidth
+  data.value.startHeight = data.value.elementHeight
+  document.addEventListener('mousemove', resize)
+  document.addEventListener('mouseup', stopResize)
+}
 
-const resize = (event: MouseEvent) => {
+function resize(event: MouseEvent) {
   if (data.value.isResizing) {
-    const deltaX = event.clientX - data.value.startX;
-    const deltaY = event.clientY - data.value.startY;
-    data.value.elementWidth = Math.max(data.value.startWidth + deltaX, 10);
-    data.value.elementHeight = Math.max(data.value.startHeight + deltaY, 10);
+    const deltaX = event.clientX - data.value.startX
+    const deltaY = event.clientY - data.value.startY
+    data.value.elementWidth = Math.max(data.value.startWidth + deltaX, 10)
+    data.value.elementHeight = Math.max(data.value.startHeight + deltaY, 10)
   }
-};
+}
 
-const stopResize = () => {
-  data.value.isResizing = false;
-  document.removeEventListener('mousemove', resize);
-  document.removeEventListener('mouseup', stopResize);
-};
-
+function stopResize() {
+  data.value.isResizing = false
+  document.removeEventListener('mousemove', resize)
+  document.removeEventListener('mouseup', stopResize)
+}
 
 // onMounted(() => {
 //   element.value = $refs.element;
@@ -89,15 +88,14 @@ const stopResize = () => {
 // onUnmounted(() => {
 //   element.value = null;
 // });
-
 </script>
 
 <template>
   <div class="canvas">
     <div
-      class="element"
-      :style="{ width: data.elementWidth + 'px', height: data.elementHeight + 'px', transform: `translate(${data.elementX}px, ${data.elementY}px)` }"
       ref="element"
+      class="element"
+      :style="{ width: `${data.elementWidth}px`, height: `${data.elementHeight}px`, transform: `translate(${data.elementX}px, ${data.elementY}px)` }"
       @mousedown="startDrag"
     >
       <slot />
@@ -105,7 +103,6 @@ const stopResize = () => {
     <div
       class="resize-handle"
       :style="{ transform: `translate(${data.elementX + data.elementWidth}px, ${data.elementY + data.elementHeight}px)` }"
-      ref="resizeHandle"
       @mousedown="startResize"
     />
   </div>
