@@ -1,1 +1,0 @@
-import{m as t,g as s,E as o,f as l}from"./entry.c93b7498.js";const r={},c={class:"fixed top-0 right-0 w-full h-full bg-[#212121] text-light-900"};function a(e,f){return l(),s("div",c,[o(e.$slots,"default")])}const _=t(r,[["render",a]]);export{_ as default};
