@@ -30,6 +30,19 @@ function undelectAll() {
   rectangles.value.forEach((node) => {
     node.isSelect = false
   })
+  document.removeEventListener('keydown', handleDelete, true)
+}
+
+function selectNodeById(id: string) {
+  undelectAll()
+  const node = rectangles.value.find(node => node.id === id)
+  if (!node)
+    return
+  node.isSelect = true
+  drawRectangles()
+  const { x, y, width, height } = node.node.node
+  drowSelectionFrame(x, y, width, height)
+  document.addEventListener('keydown', handleDelete, true)
 }
 
 function getCanvasContext() {
@@ -45,6 +58,32 @@ function getCanvasContext() {
 }
 const toolsStore = useToolsStore()
 
+function removeNodeById(id: string) {
+  const index = rectangles.value.findIndex(node => node.id === id)
+  if (index === -1)
+    return
+  rectangles.value.splice(index, 1)
+  isDrawing.value = false
+}
+
+function handleDelete(event: KeyboardEvent) {
+  const selectedNode = findSelectedNode()
+  if (!selectedNode)
+    return
+  if (event.keyCode === 8 || event.keyCode === 46) {
+    removeNodeById(selectedNode.id as string)
+    undelectAll()
+    drawRectangles()
+  }
+
+  // If pressed ESC
+  if (event.keyCode === 27 && isDrawing.value) {
+    removeNodeById(selectedNode.id as string)
+    undelectAll()
+    drawRectangles()
+  }
+}
+
 function onMouseDown(e: MouseEvent) {
   const rect = (canvasEl.value as HTMLElement).getBoundingClientRect()
   if (toolsStore.currentTool === undefined) {
@@ -53,11 +92,7 @@ function onMouseDown(e: MouseEvent) {
       return (e.clientX - rect.left > x && e.clientX - rect.left < x + width && e.clientY - rect.top > y && e.clientY - rect.top < y + height)
     })
     if (rectangleClicked) {
-      undelectAll()
-      rectangleClicked.isSelect = true
-      drawRectangles()
-      const { x, y, width, height } = rectangleClicked.node.node
-      drowSelectionFrame(x, y, width, height)
+      selectNodeById(rectangleClicked.id)
       return
     }
     else {
@@ -77,11 +112,13 @@ function onMouseDown(e: MouseEvent) {
     height: 0,
   }, ctx)
   undelectAll()
+  const id = generateUId()
   rectangles.value.push({
-    id: generateUId(),
+    id,
     node: rectangle,
-    isSelect: true,
+    isSelect: false,
   })
+  selectNodeById(id)
 }
 
 function onMouseMove(e: MouseEvent) {
