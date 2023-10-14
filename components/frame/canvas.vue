@@ -22,6 +22,16 @@ const startY = ref(0)
 const endX = ref(0)
 const endY = ref(0)
 
+function generateUId() {
+  return Math.random().toString(36).substr(2, 9)
+}
+
+function undelectAll() {
+  rectangles.value.forEach((node) => {
+    node.isSelect = false
+  })
+}
+
 function getCanvasContext() {
   if (!canvasEl.value)
     throw new Error('Canvas element is not defined')
@@ -36,9 +46,26 @@ function getCanvasContext() {
 const toolsStore = useToolsStore()
 
 function onMouseDown(e: MouseEvent) {
-  if (toolsStore.currentTool === undefined)
-    return
   const rect = (canvasEl.value as HTMLElement).getBoundingClientRect()
+  if (toolsStore.currentTool === undefined) {
+    const rectangleClicked = rectangles.value.findLast((node) => {
+      const { x, y, width, height } = node.node.node
+      return (e.clientX - rect.left > x && e.clientX - rect.left < x + width && e.clientY - rect.top > y && e.clientY - rect.top < y + height)
+    })
+    if (rectangleClicked) {
+      undelectAll()
+      rectangleClicked.isSelect = true
+      drawRectangles()
+      const { x, y, width, height } = rectangleClicked.node.node
+      drowSelectionFrame(x, y, width, height)
+      return
+    }
+    else {
+      undelectAll()
+      drawRectangles()
+    }
+    return
+  }
   isDrawing.value = true
   startX.value = e.clientX - rect.left
   startY.value = e.clientY - rect.top
@@ -75,21 +102,13 @@ function onMouseMove(e: MouseEvent) {
   drawRectangles()
 }
 
-function generateUId() {
-  return Math.random().toString(36).substr(2, 9)
-}
-
-function undelectAll() {
-  rectangles.value.forEach((node) => {
-    node.isSelect = false
-  })
-}
-
 function findSelectedNode() {
   return rectangles.value.find(node => node.isSelect)
 }
 
 function onMouseUp(e: MouseEvent) {
+  if (!isDrawing.value)
+    return
   isDrawing.value = false
   const selectedNode = findSelectedNode()
   if (!selectedNode)
