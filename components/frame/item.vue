@@ -15,7 +15,7 @@ defineProps<{ frame: FrameItemProps }>()
       {{ frame.name }}
     </div>
     <div border="~ primary" class="w-[--frame-width] h-[--frame-height]">
-      <FrameCanvas v-bind="frame" />
+      <FrameCanvas :width="frame.width" :height="frame.height" />
     </div>
   </div>
 </template>

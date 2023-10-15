@@ -3,8 +3,8 @@ import type { BaseNode } from '.'
 export function useRectangle(node: BaseNode, ctx: CanvasRenderingContext2D) {
   const rectangle = ref < any & BaseNode > ({
     ...node,
-    fillColor: 'hsla(162, 100%, 27%, 0.1)',
-    strikeColor: 'hsla(162, 100%, 27%, 1)',
+    fillColor: 'hsla(0, 0%, 8%, 1)',
+    strikeColor: 'hsla(0, 20%, 0%, 1)',
   })
   const context = ref(ctx)
 

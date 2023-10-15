@@ -38,7 +38,7 @@ interface BaseNodeMixin extends DimensionAndPosition {}
 
 export interface BaseNode extends BaseNodeMixin {}
 
-export interface NodeComposition {
+export interface UseNode {
   node: MaybeRef<BaseNode>
   setParams: (properties: Partial<BaseNode>) => void
   render: (ctx?: CanvasRenderingContext2D) => void

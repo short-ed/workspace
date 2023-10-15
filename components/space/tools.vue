@@ -1,8 +1,6 @@
-<!-- eslint-disable vue/html-self-closing -->
 <script setup lang="ts">
 import type { Tool } from '~/stores/tools'
 import { useToolsStore } from '~/stores/tools'
-import { useRectangle } from '~/tools/rectangle'
 
 const toolsStore = useToolsStore()
 
@@ -31,9 +29,7 @@ const toolIsSelected = (tool: Tool): boolean => toolsStore.currentTool === tool
       :class="toolIsSelected(tool.name) ? 'fill-white bg-primary' : 'fill-white/50'"
       @click="toolsStore.setTool(tool.name)"
     >
-      <svg viewBox="0 0 32 32" class="block" :innerHTML="tool.icon">
-        <g />
-      </svg>
+      <svg viewBox="0 0 32 32" class="block" v-html="tool.icon" />
     </button>
   </div>
 </template>
