@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { UseNode } from '~/tools'
 import { useRectangle } from '~/tools/rectangle'
-import { canvasUtil } from '~/utils/canvas'
 
 defineProps<{
   width: number
@@ -67,6 +66,16 @@ function findNodeByPoint(x: number, y: number) {
   return nodes.value.findLast(({ composable }) => {
     const { x: nodeX, y: nodeY, width, height } = composable.node
     return (x > nodeX && x < nodeX + width && y > nodeY && y < nodeY + height)
+  })
+}
+
+function findNodesBySelectedArea() {
+  return nodes.value.filter(({ composable }) => {
+    const { x: nodeX, y: nodeY, width, height } = composable.node
+    return (
+      selectedArea.value.x < nodeX && selectedArea.value.width + selectedArea.value.x > nodeX + width
+      && selectedArea.value.y < nodeY && selectedArea.value.height + selectedArea.value.y > nodeY + height
+    )
   })
 }
 
@@ -221,6 +230,12 @@ function draw() {
         ctx.rect(selectedArea.value.x, selectedArea.value.y, selectedArea.value.width, selectedArea.value.height)
         ctx.fill()
         ctx.stroke()
+
+        const selectedNodes = findNodesBySelectedArea()
+        unselectAll()
+        selectedNodes.forEach(({ id }) => {
+          selectedNodeIds.value.push(id)
+        })
       }
     }
     else {
